@@ -9,12 +9,13 @@ import (
 
 func AutoReload() {
 
+	now := time.Now()
 	log.SetFlags(log.LstdFlags | log.Llongfile)
 	p, err := os.Executable()
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("go-hot-reload: get process path:", p)
+	log.Println("go-hot-reload: get process path:", p, "boot time", now)
 	fi, err := os.Stat(p)
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +30,7 @@ func AutoReload() {
 		}
 		t2 := fi.ModTime()
 		if t2 != t1 {
-			log.Println("go-hot-reload: try reload:", p)
+			log.Println("go-hot-reload: try reload:", p, "uptime", time.Now().Sub(now).Seconds())
 			err = syscall.Exec(p, os.Args, os.Environ())
 			if err != nil {
 				log.Fatal("err", err)
