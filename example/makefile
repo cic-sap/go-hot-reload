@@ -1,12 +1,14 @@
 
-build:
+ver:
+	date +"%H:%M:%S" > ver.txt
+
+build:ver
 	go build  -o example .
 
 run:build
 	./example
 
-build-new:
-	date +"%H:%M:%S" > ver.txt
+build-new:ver
 	go build -o example.new .
 
 http-hot_reload:build-new
