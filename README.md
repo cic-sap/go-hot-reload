@@ -7,27 +7,26 @@ example code
 ```go
 package main
 
+import _ "embed"
 import (
 	"fmt"
 	reload "github.com/cic-sap/go-hot-reload/v1"
-	"github.com/gin-gonic/gin"
+
 	"log"
 	"net/http"
 	"os"
 	"time"
 )
-/**
 
-go build -o main main.go
-./main &
-# change your code
-go build -o main main.go
+import "github.com/gin-gonic/gin"
 
- */
+//go:embed ver.txt
+var ver string
+
 func main() {
 
-	log.SetFlags(log.Llongfile | log.LstdFlags)
-	ver := "9"
+	log.Println("start")
+	log.SetFlags(log.Lshortfile | log.LstdFlags)
 	go reload.AutoReload()
 
 	// your app code ...
@@ -46,7 +45,9 @@ func main() {
 
 	r.Run("0.0.0.0:2345")
 
+	log.Println("end")
 }
+
 
 ```
 
@@ -54,6 +55,16 @@ How to replace k8s pod process online
 
 
 example
+```makefile
+build-new:
+	date +"%H:%M:%S" > ver.txt
+	go build -o example.new .
+
+http-hot_reload:build-new
+	curl  http://127.0.0.1:8087/upload  -F "file=@./example.new" -v
+
+```
+
 ```shell
 set -ex
 export KUBECONFIG=~/.kube/kubeconfig--gcp01.yaml
